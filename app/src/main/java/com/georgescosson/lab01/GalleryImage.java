@@ -11,10 +11,12 @@ public class GalleryImage {
 
     private String title;
     private Bitmap image;
+    private String tags;
 
-    public GalleryImage(String title, Bitmap bitmap){
+    public GalleryImage(String title, String tags, Bitmap bitmap){
         this.title = title;
         this.image = bitmap;
+        this.tags = tags;
     }
 
     public Bitmap getImage() {
@@ -35,10 +37,19 @@ public class GalleryImage {
 
     @Override
     public String toString(){
-        return title;
+        return "Title : " + title + "\n" +
+                "Tags : " + tags;
     }
 
     public void print(){
         Log.d("debug", this.toString());
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 }
