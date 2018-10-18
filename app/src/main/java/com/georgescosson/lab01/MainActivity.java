@@ -1,6 +1,7 @@
 package com.georgescosson.lab01;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -15,9 +16,14 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import junit.framework.Test;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -30,33 +36,33 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView recyclerView;
+    private Button zoomButton;
     private ImageAdapter adapter;
+
+    private int currentSpanNumber;
 
     ArrayList<GalleryImage> galleryImages;
 
     private DatabaseHelper dbHelper = new DatabaseHelper(MainActivity.this);
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = (RecyclerView)findViewById(R.id.recycler);
+        recyclerView = findViewById(R.id.recycler);
+        zoomButton = findViewById(R.id.zoom);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new GridLayoutManager(getApplicationContext(),5);
+        currentSpanNumber = 2;
+        layoutManager = new GridLayoutManager(getApplicationContext(), currentSpanNumber);
         recyclerView.setLayoutManager(layoutManager);
         galleryImages = loadData();
         adapter = new ImageAdapter(getApplicationContext(), galleryImages);
         recyclerView.setAdapter(adapter);
     }
 
-    private String getRandomString(){
-        byte[] array = new byte[7]; // length is bounded by 7
-        new Random().nextBytes(array);
-        return new String(array, Charset.forName("UTF-8"));
-    }
-
-    private ArrayList<GalleryImage> loadData(){
+    private ArrayList<GalleryImage> loadData() {
         return dbHelper.getEntries();
     }
 
@@ -75,9 +81,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void changeSpanNumber(View view) {
+        int number;
+
+        switch(currentSpanNumber){
+            case 1:
+                number = 2;
+                break;
+            case 2:
+                number = 4;
+                break;
+            default:
+                number = 1;
+        }
+
+        Log.d("TEST", "Setting span to :" + String.valueOf(number));
+        this.currentSpanNumber = number;
+        layoutManager = new GridLayoutManager(getApplicationContext(), currentSpanNumber);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         Log.d("debug", "OnRequestPermissionsResult");
         switch (requestCode) {
             case PICK_FROM_GALLERY:
@@ -87,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
                 } else {
                     //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
-                    Toast.makeText(MainActivity.this, "We need access to properly run",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "We need access to properly run", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -101,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
             Cursor cursor = getContentResolver().query(selectedImage,
                     filePathColumn, null, null, null);
@@ -109,20 +134,20 @@ public class MainActivity extends AppCompatActivity {
 
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String picturePath = cursor.getString(columnIndex);
+            String[] path = picturePath.split("/");
+            String filename = path[path.length - 1];
             cursor.close();
-            Toast.makeText(MainActivity.this, "Your image has been added ??",Toast.LENGTH_LONG).show();
-            /*ImageView imageView = (ImageView) findViewById(R.id.iv);*/
+            Toast.makeText(MainActivity.this, "Your image has been added", Toast.LENGTH_LONG).show();
             Bitmap imageBitmap = BitmapFactory.decodeFile(picturePath);
-            /*imageView.setImageBitmap(imageBitmap);*/
 
             // Store image to DB
-            String title = "image_"+getRandomString();
+            String title = filename;
             GalleryImage newImage = new GalleryImage(title, imageBitmap);
             dbHelper.addEntry(newImage);
             adapter.addImage(newImage);
 
         } else {
-            Toast.makeText(MainActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, "You haven't picked Image", Toast.LENGTH_LONG).show();
         }
     }
 

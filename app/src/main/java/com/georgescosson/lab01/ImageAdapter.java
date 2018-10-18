@@ -3,7 +3,9 @@ package com.georgescosson.lab01;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,27 +26,29 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public ImageAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        Log.d("debug", "onCreateViewHolder");
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.gallery_image, viewGroup, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ImageAdapter.ViewHolder viewHolder, int i) {
-        Log.d("debug", "onBindViewHolder");
         GalleryImage image = galleryList.get(i);
 
         viewHolder.title.setText(image.getTitle());
         viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
         viewHolder.img.setImageBitmap(image.getImage());
 
-        /*Picasso.with(context).load(galleryList.get(i).getImage_ID()).resize(240, 120).into(viewHolder.img);
         viewHolder.img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(context,"Image",Toast.LENGTH_SHORT).show();
+
             }
-        });*/
+        });
+
+        /*Picasso.with(context).load(galleryList.get(i).getImage_ID()).resize(240, 120).into(viewHolder.img);*/
+
+
     }
 
     public void addImage(GalleryImage image){
