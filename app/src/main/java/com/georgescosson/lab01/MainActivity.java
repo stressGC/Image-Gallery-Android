@@ -155,4 +155,9 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.deleteAll();
         adapter.removeAll();
     }
+
+    public void goToForm(View view) {
+        Intent intent = new Intent(this, AddActivity.class);
+        startActivity(intent);
+    }
 }
