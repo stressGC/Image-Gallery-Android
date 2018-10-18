@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -15,6 +17,10 @@ public class AddActivity extends AppCompatActivity {
     }
 
     public void validateForm(View view) {
-        Log.d("DEBUG", "here");
+        EditText titleView = (EditText) findViewById(R.id.form_title);
+        String title = titleView.getText().toString();
+        EditText tagsView = (EditText) findViewById(R.id.form_tags);
+        String tags = tagsView.getText().toString();git
+        Log.d("DEBUG", "title : " + title + ", tags : " + tags);
     }
 }
