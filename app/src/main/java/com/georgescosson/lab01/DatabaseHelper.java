@@ -47,18 +47,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void addEntry(GalleryImage newImage) throws SQLiteException {
+    public long addEntry(GalleryImage newImage) throws SQLiteException {
         SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues cv = new  ContentValues();
-
         DatabaseBitmapUtils utils = new DatabaseBitmapUtils();
+
         byte[] image = utils.getBytes(newImage.getImage());
 
+        ContentValues cv = new  ContentValues();
         cv.put(Key_TITLE, newImage.getTitle());
         cv.put(KEY_IMAGE, image);
-        database.insert(DB_TABLE_IMAGES, null, cv);
+        cv.put(Key_TAGS, newImage.getTags());
 
-        Log.d("debug", "Your image " + newImage.getTitle() + " has been saved to db");
+        long index = database.insert(DB_TABLE_IMAGES, null, cv);
+
+        Log.d("debug", "Your image " + newImage.toString() + " has been saved to db");
 
         String message = "";
 
@@ -67,6 +69,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         Log.d("debug", "Entries are now : " + message);
+
+        return index;
     }
 
     public ArrayList<GalleryImage> getEntries(){
@@ -78,8 +82,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.e("meh", "maadh");
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                /*int index = cursor.getInt(cursor.getColumnIndexOrThrow(Key_INDEX));
-                Log.d("DEBUG", String.valueOf(index));*/
                 byte[] image = cursor.getBlob(cursor.getColumnIndex(KEY_IMAGE));
                 String title = cursor.getString(cursor.getColumnIndex(Key_TITLE));
                 Bitmap bitmap = utils.getImage(image);

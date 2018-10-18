@@ -96,5 +96,18 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, RESULT_LOAD_IMAGE);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_LOAD_IMAGE) {
+            if(resultCode == 200){
+                long createdIndex = data.getLongExtra("createdIndex", -1);
+                Log.d("DEBUG", "new index is : " + String.valueOf(createdIndex));
+                this.addNewImageToView(createdIndex);
+            }
+        }
+    }
+
+    private void addNewImageToView(long createdIndex) {
+    }
 
 }

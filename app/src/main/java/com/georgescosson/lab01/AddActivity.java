@@ -60,7 +60,11 @@ public class AddActivity extends AppCompatActivity {
             newImage.print();
 
             //Pass image back
-            dbHelper.addEntry(newImage);
+            long index = dbHelper.addEntry(newImage);
+            Intent intent = new Intent();
+            intent.putExtra("createdIndex", index);
+            setResult(200, intent);
+            finish();
 
 
         } else {
@@ -98,7 +102,6 @@ public class AddActivity extends AppCompatActivity {
             Toast.makeText(AddActivity.this, "You haven't picked Image", Toast.LENGTH_LONG).show();
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
