@@ -27,12 +27,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DB_TABLE_IMAGES = "images";
 
     // column names
+    private static final String Key_INDEX = "image_id";
     private static final String Key_TITLE = "image_name";
     private static final String Key_TAGS = "image_tags";
     private static final String KEY_IMAGE = "image_data";
 
     // Table create statement
     private static final String CREATE_TABLE_IMAGES = "CREATE TABLE " + DB_TABLE_IMAGES + "("+
+            Key_INDEX + " INTEGER PRIMARY KEY," +
             Key_TITLE + " TEXT," +
             Key_TAGS + " TEXT," +
             KEY_IMAGE + " BLOB);";
@@ -73,9 +75,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = database.rawQuery(GET_ALL_ENTRIES, null);
         ArrayList<GalleryImage> images = new ArrayList<GalleryImage>();
-
+        Log.e("meh", "maadh");
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
+                /*int index = cursor.getInt(cursor.getColumnIndexOrThrow(Key_INDEX));
+                Log.d("DEBUG", String.valueOf(index));*/
                 byte[] image = cursor.getBlob(cursor.getColumnIndex(KEY_IMAGE));
                 String title = cursor.getString(cursor.getColumnIndex(Key_TITLE));
                 Bitmap bitmap = utils.getImage(image);

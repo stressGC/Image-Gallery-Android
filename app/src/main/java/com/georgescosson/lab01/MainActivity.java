@@ -32,7 +32,6 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
-    private static final int PICK_FROM_GALLERY = 2;
 
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView recyclerView;
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int currentSpanNumber;
 
-    ArrayList<GalleryImage> galleryImages;
+    private ArrayList<GalleryImage> galleryImages;
 
     private DatabaseHelper dbHelper = new DatabaseHelper(MainActivity.this);
 
@@ -63,22 +62,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ArrayList<GalleryImage> loadData() {
+        Log.e("meh", "starf");
         return dbHelper.getEntries();
-    }
-
-    public void selectImagesFromStorage(View view) {
-        Log.d("debug", "selectImagesfromStorage");
-        try {
-            if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
-            } else {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, RESULT_LOAD_IMAGE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void changeSpanNumber(View view) {
@@ -108,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void goToForm(View view) {
         Intent intent = new Intent(this, AddActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, RESULT_LOAD_IMAGE);
     }
+
+
 }

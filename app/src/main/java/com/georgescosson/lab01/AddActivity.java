@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 public class AddActivity extends AppCompatActivity {
 
-    private static final int RESULT_LOAD_IMAGE = 10;
+    private static final int RESULT_LOAD_IMAGE = 1;
     private static final int PICK_FROM_GALLERY = 2;
 
     private DatabaseHelper dbHelper = new DatabaseHelper(AddActivity.this);
