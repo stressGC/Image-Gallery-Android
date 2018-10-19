@@ -99,13 +99,13 @@ public class AddActivity extends AppCompatActivity {
             this.imageDefault = filename;
             this.imageIsSet = true;
         } else {
-            Toast.makeText(AddActivity.this, "You haven't picked Image", Toast.LENGTH_LONG).show();
+            Toast.makeText(AddActivity.this, "You haven't picked an image", Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        Log.d("debug", "OnRequestPermissionsResult");
+
         switch (requestCode) {
             case PICK_FROM_GALLERY:
                 // If request is cancelled, the result arrays are empty.
@@ -118,10 +118,11 @@ public class AddActivity extends AppCompatActivity {
                 }
                 break;
         }
+
     }
 
     public void selectImagesFromStorage(View view) {
-        Log.d("debug", "selectImagesfromStorage");
+
         try {
             if (ActivityCompat.checkSelfPermission(AddActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(AddActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
@@ -133,5 +134,6 @@ public class AddActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }

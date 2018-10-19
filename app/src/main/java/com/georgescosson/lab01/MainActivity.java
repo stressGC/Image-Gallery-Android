@@ -1,33 +1,16 @@
 package com.georgescosson.lab01;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import junit.framework.Test;
-
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ArrayList<GalleryImage> loadData() {
-        Log.e("meh", "starf");
         return dbHelper.getEntries();
     }
 
@@ -80,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                 number = 1;
         }
 
-        Log.d("TEST", "Setting span to :" + String.valueOf(number));
         this.currentSpanNumber = number;
         layoutManager = new GridLayoutManager(getApplicationContext(), currentSpanNumber);
         recyclerView.setLayoutManager(layoutManager);
@@ -101,13 +82,24 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == RESULT_LOAD_IMAGE) {
             if(resultCode == 200){
                 long createdIndex = data.getLongExtra("createdIndex", -1);
-                Log.d("DEBUG", "new index is : " + String.valueOf(createdIndex));
-                this.addNewImageToView(createdIndex);
+                if(createdIndex != -1){
+                    this.addNewImageToView(createdIndex);
+                } else {
+                    Toast.makeText(MainActivity.this, "An error occured", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
 
     private void addNewImageToView(long createdIndex) {
+        GalleryImage newImage = dbHelper.getEntry(createdIndex);
+
+        if(newImage != null){
+            galleryImages.add(newImage);
+            adapter.notifyDataSetChanged();
+        } else {
+            Toast.makeText(MainActivity.this, "An error occured", Toast.LENGTH_LONG).show();
+        }
     }
 
 }

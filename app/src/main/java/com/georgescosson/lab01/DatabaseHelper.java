@@ -16,14 +16,9 @@ import java.util.ArrayList;
  */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    // Database Version
+
     private static final int DATABASE_VERSION = 1;
-    boolean isTestMode = true;
-
-    // Database Name
     private static final String DATABASE_NAME = "lab01";
-
-    // Table Names
     private static final String DB_TABLE_IMAGES = "images";
 
     // column names
@@ -39,12 +34,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Key_TAGS + " TEXT," +
             KEY_IMAGE + " BLOB);";
 
-    // Get all entries statement
+    // SQL REQUESTS
     private static final String GET_ALL_ENTRIES = "SELECT * FROM " + DB_TABLE_IMAGES + ";";
+    private static final String GET_ENTRY_FROM_INDEX = "SELECT * FROM " + DB_TABLE_IMAGES + " WHERE " + Key_INDEX + " = ";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-
     }
 
     public long addEntry(GalleryImage newImage) throws SQLiteException {
@@ -60,15 +55,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         long index = database.insert(DB_TABLE_IMAGES, null, cv);
 
-        Log.d("debug", "Your image " + newImage.toString() + " has been saved to db");
-
         String message = "";
 
         for(GalleryImage gi : getEntries()){
             message += "\n->" + gi.toString();
         }
-
-        Log.d("debug", "Entries are now : " + message);
 
         return index;
     }
@@ -79,22 +70,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = database.rawQuery(GET_ALL_ENTRIES, null);
         ArrayList<GalleryImage> images = new ArrayList<GalleryImage>();
-        Log.e("meh", "maadh");
+
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 byte[] image = cursor.getBlob(cursor.getColumnIndex(KEY_IMAGE));
                 String title = cursor.getString(cursor.getColumnIndex(Key_TITLE));
+                String tags = cursor.getString(cursor.getColumnIndex(Key_TAGS));
                 Bitmap bitmap = utils.getImage(image);
-                images.add(new GalleryImage(title, "", bitmap));
+                images.add(new GalleryImage(title, tags, bitmap));
                 cursor.moveToNext();
             }
         }
 
-        for (GalleryImage image : images){
-            Log.d("debug", image.toString());
+        return images;
+    }
+
+    public GalleryImage getEntry(long index){
+
+        SQLiteDatabase database = this.getWritableDatabase();
+        DatabaseBitmapUtils utils = new DatabaseBitmapUtils();
+
+        Cursor cursor = database.rawQuery(GET_ENTRY_FROM_INDEX + String.valueOf(index) + ";", null);
+        GalleryImage galleryImage = new GalleryImage("", "", null);
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                byte[] image = cursor.getBlob(cursor.getColumnIndex(KEY_IMAGE));
+                String title = cursor.getString(cursor.getColumnIndex(Key_TITLE));
+                String tags = cursor.getString(cursor.getColumnIndex(Key_TAGS));
+                Bitmap bitmap = utils.getImage(image);
+                galleryImage.setImage(bitmap);
+                galleryImage.setTags(tags);
+                galleryImage.setTitle(title);
+                cursor.moveToNext();
+            }
+        }
+        if (galleryImage.getTitle() != "") {
+            galleryImage.print();
+            return galleryImage;
+        } else {
+            return null;
         }
 
-        return images;
     }
 
     @Override

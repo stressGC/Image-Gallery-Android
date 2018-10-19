@@ -42,12 +42,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 Toast.makeText(context,"Image",Toast.LENGTH_SHORT).show();
-
             }
         });
-
-        /*Picasso.with(context).load(galleryList.get(i).getImage_ID()).resize(240, 120).into(viewHolder.img);*/
-
 
     }
 
