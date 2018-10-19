@@ -1,6 +1,7 @@
 package com.georgescosson.lab01;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -52,7 +53,7 @@ public class AddActivity extends AppCompatActivity {
             if(title.length() == 0){
                 title = imageDefault;
             }
-            Toast.makeText(AddActivity.this, "Form is valid", Toast.LENGTH_LONG).show();
+
             ImageView imagePreview = (ImageView) findViewById(R.id.form_image);
             Bitmap bitmap = ((BitmapDrawable)imagePreview.getDrawable()).getBitmap();
 
@@ -63,7 +64,7 @@ public class AddActivity extends AppCompatActivity {
             long index = dbHelper.addEntry(newImage);
             Intent intent = new Intent();
             intent.putExtra("createdIndex", index);
-            setResult(200, intent);
+            setResult(Activity.RESULT_OK, intent);
             finish();
 
 

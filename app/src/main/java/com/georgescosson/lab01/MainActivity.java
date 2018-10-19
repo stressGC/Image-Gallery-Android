@@ -1,6 +1,7 @@
 package com.georgescosson.lab01;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -80,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_LOAD_IMAGE) {
-            if(resultCode == 200){
+            if(resultCode == Activity.RESULT_OK){
                 long createdIndex = data.getLongExtra("createdIndex", -1);
                 if(createdIndex != -1){
                     this.addNewImageToView(createdIndex);
